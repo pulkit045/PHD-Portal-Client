@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
@@ -30,6 +31,15 @@ const facultySignup = async (body) => {
 	}
 }
 
+const scholarSignup = async (body) => {
+	try {
+		const scholar = await axios.post(`${BASE_URL}/auth/scholar/signup`, body);
+		console.log(scholar);
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 function Copyright(props) {
 	return (
 		<Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -46,6 +56,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+	const [isFaculty, setIsFaculty] = useState(false);
 	const navigate = useNavigate();
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -57,12 +68,14 @@ export default function SignUp() {
 			contactNo: data.get('contact'),
 			gender: data.get('gender'),
 			program: data.get('program'),
-			faculty: data.get('faculty')
+			// faculty: data.get('faculty')
+			enrollmentNumber: !isFaculty && data.get('enrollmentNumber'),
+			admission: !isFaculty && data.get('admission')
 		}
 		console.log(body);
-		const res = facultySignup(body);
+		const res = isFaculty ? facultySignup(body) : scholarSignup(body);
 		if (res.status === 200) navigate('/');
-		else navigate('/404')
+		else navigate('/')
 	};
 
 	return (
@@ -83,7 +96,7 @@ export default function SignUp() {
 					<Typography component="h1" variant="h5">
 						Sign up
 					</Typography>
-					<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+					<Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
 								<TextField
@@ -117,6 +130,30 @@ export default function SignUp() {
 									autoComplete="new-password"
 								/>
 							</Grid>
+							{!isFaculty && 
+								<Grid item xs={12}>
+								<TextField
+									required
+									fullWidth
+									id="enrollmentNumber"
+									label="Enrollment Number"
+									name="enrollmentNumber"
+									autoComplete="enrollmentNumber"
+								/>
+							</Grid>
+							}
+							{!isFaculty && 
+								<Grid item xs={12}>
+								<TextField
+									required
+									fullWidth
+									id="admission"
+									label="Admission"
+									name="admission"
+									autoComplete="admission"
+								/>
+							</Grid>
+							}
 							<Grid item xs={12}>
 								<TextField
 									required
@@ -140,7 +177,7 @@ export default function SignUp() {
 										<MenuItem value={"F"}>F</MenuItem>
 									</Select>
 								</FormControl>
-							</Grid>
+							</Grid>	
 							<Grid item xs={4}>
 								<TextField
 									required
@@ -153,10 +190,12 @@ export default function SignUp() {
 							</Grid>
 							<Grid item xs={4}>
 								<FormControlLabel
-									control={<Checkbox value="faculty" color="primary" />}
+									control={<Checkbox value={isFaculty?"faculty":"scholar"} color="primary" />}
 									label="Faculty Sign Up"
 									id='faculty'
 									name='faculty'
+									checked={isFaculty}	
+									onChange={() => setIsFaculty(prev => !prev)}
 								/>
 							</Grid>
 						</Grid>

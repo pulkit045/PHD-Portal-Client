@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-// import * as jwt from 'jsonwebtoken';
+import { isExpired, decodeToken } from "react-jwt";
 
 import './App.css';
 
@@ -8,6 +8,8 @@ import SignUp from './pages/SignUp';
 import useToken from './auth/useToken';
 // import ForgotPassword from "./pages/ForgotPassword"
 import Page404 from './pages/Page404';
+import Scholar from './Scholar';
+import Faculty from './Faculty';
 
 
 function App() {
@@ -24,23 +26,29 @@ function App() {
   if (location.pathname === "/signup") {
     return <SignUp />
   }
+  if (location.pathname === "/signin") {
+    return <SignIn setToken={setToken} />
+  }
 
-  // console.log("token", token) 
+  // console.log("token", token)
 
   if (!token) {
     return <SignIn setToken={setToken} />;
   }
 
-  // const payload = jwt.decode(token);
-  // // console.log(payload);
-  // // console.log(Date.now()/1000)
-  // if (payload.exp <= Date.now() / 1000) {
-  //   localStorage.removeItem('token');
-  //   return <SignIn setToken={setToken} />;
-  // }
+  if (isExpired(token)) {
+    localStorage.removeItem('token');
+    return <SignIn setToken={setToken} />;
+  }
+
+  const decodedToken = decodeToken(token);
+  // console.log("decode", decodedToken)
+
+  if (decodedToken.role === "scholar") return <Scholar />
+
+  if (decodedToken.role === "faculty") return <Faculty />
 
   return <Page404 />
-
 }
 
 export default App;
