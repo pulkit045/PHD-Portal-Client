@@ -33,14 +33,15 @@ const getAllFaculties = async () => {
 
 const requestSupervisor = async (data) => {
 	try {
-		console.log(data);
+		// console.log(data);
 		const res = await axios.post(`${BASE_URL}/request-supervisor`, data, {
 			headers: {
 				Authorization:
 					"Bearer " + JSON.parse(localStorage.getItem("token")),
 			}
 		});
-		return res.data;
+		console.log(res);
+		// return res.data;
 	}
 	catch (err) {
 		console.error("Error in getting profile", err);
@@ -80,8 +81,8 @@ export default class Scholar extends React.Component {
 				scholar_id: this.state.scholar._id,
 			}
 			// console.log(body);
-			const res = await requestSupervisor(body);
-			console.log("request supervisor", res)
+			await requestSupervisor(body);
+			// console.log("request supervisor", res)
 		};
 		return (
 			<Container

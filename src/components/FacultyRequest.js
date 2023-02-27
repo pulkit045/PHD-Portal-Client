@@ -2,7 +2,7 @@ import { Avatar, Box, Grid, Typography } from '@mui/material'
 import axios from 'axios'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { BASE_URL } from '../CONSTANTS'
+import { BASE_URL } from '../CONSTANTS'	
 
 async function approve(id) {
 	console.log("id", id)
