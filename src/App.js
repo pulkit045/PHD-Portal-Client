@@ -10,6 +10,7 @@ import useToken from './auth/useToken';
 import Page404 from './pages/Page404';
 import Scholar from './Scholar';
 import Faculty from './Faculty';
+import Fic from './Fic';
 
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
   if (decodedToken.role === "scholar") return <Scholar />
 
   if (decodedToken.role === "faculty") return <Faculty />
-
+  if (decodedToken.role === "fic") return <Fic />
   return <Page404 />
 }
 
