@@ -11,11 +11,16 @@ import Page404 from './pages/Page404';
 import Scholar from './Scholar';
 import Faculty from './Faculty';
 import Fic from './Fic';
+import { useEffect, useState } from 'react';
 
 
 function App() {
   const location = useLocation();
   const { token, setToken } = useToken();
+  const [decodedToken, setDecodedToken] = useState()
+  useEffect(() => {
+    setDecodedToken(decodeToken(token));
+  }, [token])
 
   // if (location.pathname === '/forgot-password') {
   //   localStorage.removeItem("token");
@@ -42,13 +47,13 @@ function App() {
     return <SignIn setToken={setToken} />;
   }
 
-  const decodedToken = decodeToken(token);
+  
   // console.log("decode", decodedToken)
 
-  if (decodedToken.role === "scholar") return <Scholar />
-
-  if (decodedToken.role === "faculty") return <Faculty />
-  if (decodedToken.role === "fic") return <Fic />
+  if (decodedToken && decodedToken.role === "scholar" ) return <Scholar notMtech={true}/>
+  if (decodedToken && decodedToken.role === "mtech" ) return <Scholar notMtech={false}/>
+  if (decodedToken && decodedToken.role === "faculty") return <Faculty />
+  if (decodedToken && decodedToken.role === "fic") return <Fic />
   return <Page404 />
 }
 

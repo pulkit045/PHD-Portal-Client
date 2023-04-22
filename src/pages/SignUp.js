@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import { Snackbar, Alert, AlertTitle } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { FormControl } from "@mui/material";
@@ -40,6 +41,17 @@ const scholarSignup = async (body) => {
   }
 };
 
+const checkEmail = (email) => {
+  if (!email.includes("@")) return false;
+
+  const domainIIITL = "iiitl.ac.in";
+  let emailDomain = email.split("@");
+  emailDomain = emailDomain[1];
+
+  if (domainIIITL !== emailDomain) return false;
+  return true;
+};
+
 function Copyright(props) {
   return (
     <Typography
@@ -62,25 +74,41 @@ const theme = createTheme();
 
 export default function SignUp() {
   const [isFaculty, setIsFaculty] = useState(false);
+  const [email , setEmail] = useState("");
+  const [open ,setOpen] = useState(false);
+  const [defaultError, setDefaultError] = useState({ title: "", body: "" });
+
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const body = {
-      fullName: data.get("fullName"),
-      email: data.get("email"),
-      password: data.get("password"),
-      contactNo: data.get("contact"),
-      gender: data.get("gender"),
-      program: data.get("program"),
-      // faculty: data.get('faculty')
-      enrollmentNumber: !isFaculty && data.get("enrollmentNumber"),
-      admission: !isFaculty && data.get("admission"),
-    };
-    console.log(body);
-    const res = isFaculty ? facultySignup(body) : scholarSignup(body);
-    if (res.status === 200) navigate("/");
-    else navigate("/");
+    if(checkEmail(email)){
+      const data = new FormData(event.currentTarget);
+      const body = {
+        fullName: data.get("fullName"),
+        // email: data.get("email"),
+        email : email,
+        password: data.get("password"),
+        contactNo: data.get("contact"),
+        gender: data.get("gender"),
+        program: data.get("program"),
+        // faculty: data.get('faculty')
+        enrollmentNumber: !isFaculty && data.get("enrollmentNumber"),
+        admission: !isFaculty && data.get("admission"),
+      };
+      console.log(body);
+      const res = isFaculty ? facultySignup(body) : scholarSignup(body);
+      if (res.status === 200) navigate("/");
+      else navigate("/");
+    }
+    else{
+      setOpen(true);
+      // setSignupLoad(false);
+      setDefaultError({
+        title: "Error",
+        body: "Sign Up with your College Account",
+      });
+
+    }
   };
 
   return (
@@ -121,6 +149,8 @@ export default function SignUp() {
                   id="email"
                   label="Email Address"
                   name="email"
+                  value={email}
+                  onChange={(e)=>{setEmail(e.target.value)}}
                   autoComplete="email"
                 />
               </Grid>
@@ -228,6 +258,21 @@ export default function SignUp() {
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={(e, reason) => {
+          if (reason === "clickaway") return;
+          setOpen(false);
+        }}
+      >
+        <Alert onClose={() => setOpen(false)} severity="error">
+          <AlertTitle>
+            <strong>{defaultError.title}</strong>
+          </AlertTitle>
+          {defaultError.body}
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
