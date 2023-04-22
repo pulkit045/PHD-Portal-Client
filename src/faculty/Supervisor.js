@@ -80,12 +80,20 @@ function Supervisor() {
           }
         });
 
-        const prevRowsDone = rowsDone;
-        const prevRowsPending = rowsPending;
+        
+
+        // const prevRowsDone = rowsDone;
+        // const prevRowsPending = rowsPending;
 
         setRowsDone(newRowDone);
         setRowsPending(newRowPending);
+
+        
       }
+    }
+    if(localStorage.getItem("shouldLoad")===null){
+      localStorage.setItem("shouldLoad",true);
+      window.location.reload(true);
     }
   }, [faculty]);
 

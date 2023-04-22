@@ -29,6 +29,7 @@ function Header() {
 
 		if (item === "Logout") {
 			localStorage.removeItem("token");
+			localStorage.removeItem("shouldLoad");
 			navigate("/signin");
 		}
 		setAnchorElUser(null);

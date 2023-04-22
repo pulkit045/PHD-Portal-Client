@@ -44,6 +44,7 @@ function App() {
 
   if (isExpired(token)) {
     localStorage.removeItem('token');
+    localStorage.removeItem('shouldLoad');
     return <SignIn setToken={setToken} />;
   }
 

@@ -4,9 +4,17 @@ import {
 } from "@mui/material";
 // import axios from "axios";
 import React from "react";
+import { useEffect } from "react";
 
 function Profile(props) {
   const { scholar } = props;
+
+  useEffect(()=>{
+    if(localStorage.getItem("shouldLoad")===null){
+      localStorage.setItem("shouldLoad",true);
+      window.location.reload(true);
+    }
+  },[]);
 
   return (
     // <>

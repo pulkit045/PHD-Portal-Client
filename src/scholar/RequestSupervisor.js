@@ -78,8 +78,10 @@ function RequestSupervisor(props) {
         });
         const prevRows = rows;
         setRows([...prevRows,...newRows]);
+        
       }
     }
+    
   }, [scholar]);
 
   // const [isReq,setIsReq] = useState(false);
