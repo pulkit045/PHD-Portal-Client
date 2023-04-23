@@ -76,8 +76,8 @@ function RequestSupervisor(props) {
           const dt = createData(val.supervisor, val.supervisor_status);
           newRows.push(dt);
         });
-        const prevRows = rows;
-        setRows([...prevRows,...newRows]);
+        // const prevRows = rows;
+        setRows(newRows);
         
       }
     }
@@ -99,6 +99,7 @@ function RequestSupervisor(props) {
       scholar_id: scholar._id,
     };
     await requestSupervisor(body);
+    setNameValue("");
     func();
   };
 
@@ -116,7 +117,7 @@ function RequestSupervisor(props) {
         });
     }
     getAllFaculties();
-  }, []);
+  }, [rows]);
   
   return (
     <>

@@ -1,5 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { isExpired, decodeToken } from "react-jwt";
+import ScholarProvider from "./hook/useGetScholar";
+import FacultyProvider from "./hook/useGetFaculty";
 
 import './App.css';
 
@@ -51,9 +53,9 @@ function App() {
   
   // console.log("decode", decodedToken)
 
-  if (decodedToken && decodedToken.role === "scholar" ) return <Scholar notMtech={true}/>
-  if (decodedToken && decodedToken.role === "mtech" ) return <Scholar notMtech={false}/>
-  if (decodedToken && decodedToken.role === "faculty") return <Faculty />
+  if (decodedToken && decodedToken.role === "scholar" ) return <ScholarProvider><Scholar notMtech={true}/></ScholarProvider>
+  if (decodedToken && decodedToken.role === "mtech" ) return <ScholarProvider><Scholar notMtech={false}/></ScholarProvider>
+  if (decodedToken && decodedToken.role === "faculty") return <FacultyProvider><Faculty /></FacultyProvider>
   if (decodedToken && decodedToken.role === "fic") return <Fic />
   return <Page404 />
 }
