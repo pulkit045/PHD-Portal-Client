@@ -212,23 +212,23 @@ function Course() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="left">Course Name</StyledTableCell>
+              <StyledTableCell align="center">Course Name</StyledTableCell>
               <StyledTableCell align="center">Faculty Name</StyledTableCell>
               <StyledTableCell align="center">Course Credits</StyledTableCell>
-              <StyledTableCell align="right">Actions</StyledTableCell>
+              <StyledTableCell align="center">Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rowscourses.map((row, index) => (
               <StyledTableRow key={index}>
-                <StyledTableCell align="left">
+                <StyledTableCell align="center">
                   {row.course_name}
                 </StyledTableCell>
                 <StyledTableCell align="center">{row.fullName}</StyledTableCell>
                 <StyledTableCell align="center">
                   {row.course_credits}
                 </StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="center">
                   <button onClick={() => addToActive(row._id, setCourses, setData)}>
                     {" "}
                     Add this course{" "}
@@ -245,16 +245,16 @@ function Course() {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell align="left">Course Name</StyledTableCell>
+                <StyledTableCell align="center">Course Name</StyledTableCell>
                 <StyledTableCell align="center">Faculty Name</StyledTableCell>
                 <StyledTableCell align="center">Course Credits</StyledTableCell>
-                <StyledTableCell align="right">Actions</StyledTableCell>
+                <StyledTableCell align="center">Actions</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rowsactive.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="left">
+                  <StyledTableCell align="center">
                     {row.course_name}
                   </StyledTableCell>
                   <StyledTableCell align="center">
@@ -263,7 +263,7 @@ function Course() {
                   <StyledTableCell align="center">
                     {row.course_credits}
                   </StyledTableCell>
-                  <StyledTableCell align="right">
+                  <StyledTableCell align="center">
                     <button onClick={() => removeFromActive(row._id, setData)}>
                       {" "}
                       Completed It !!{" "}
@@ -282,21 +282,21 @@ function Course() {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell align="left">Course Name</StyledTableCell>
+                <StyledTableCell align="center">Course Name</StyledTableCell>
                 <StyledTableCell align="center">Faculty Name</StyledTableCell>
-                <StyledTableCell align="right">Course Credits</StyledTableCell>
+                <StyledTableCell align="center">Course Credits</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rowscompleted.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="left">
+                  <StyledTableCell align="center">
                     {row.course_name}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {row.fullName}
                   </StyledTableCell>
-                  <StyledTableCell align="right">
+                  <StyledTableCell align="center">
                     {row.course_credits}
                   </StyledTableCell>
                 </StyledTableRow>

@@ -103,15 +103,15 @@ function Supervisor() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="left">Scholar Name</StyledTableCell>
-              <StyledTableCell align="right">Accept</StyledTableCell>
-              <StyledTableCell align="right">Reject</StyledTableCell>
+              <StyledTableCell align="center">Scholar Name</StyledTableCell>
+              <StyledTableCell align="center">Accept</StyledTableCell>
+              <StyledTableCell align="center">Reject</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rowsPending.map((row, index) => (
               <StyledTableRow key={index}>
-                <StyledTableCell align="left">
+                <StyledTableCell align="center">
                   <Link href={`/scholar/${row.scholar_id}`} variant="body2">
                     <Typography sx={{ padding: "7px" }}>
                       {row.fullName}
@@ -121,7 +121,7 @@ function Supervisor() {
                 <StyledTableCell align="center">
                   <Approve id={row.request_id} />
                 </StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="center">
                   <Reject id={row.request_id} />
                 </StyledTableCell>
               </StyledTableRow>
@@ -133,15 +133,15 @@ function Supervisor() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="left">Scholar Name</StyledTableCell>
-              <StyledTableCell align="right">Supervisor Status</StyledTableCell>
+              <StyledTableCell align="center">Scholar Name</StyledTableCell>
+              <StyledTableCell align="center">Supervisor Status</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rowsDone.map((row, index) => (
               <StyledTableRow key={index}>
-                <StyledTableCell align="left">{row.fullName}</StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="center">{row.fullName}</StyledTableCell>
+                <StyledTableCell align="center">
                   {row.supervisor_status}
                 </StyledTableCell>
               </StyledTableRow>

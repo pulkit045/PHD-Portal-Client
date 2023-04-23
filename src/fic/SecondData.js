@@ -10,6 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { Typography } from "@mui/material";
 
 function createData(scholar_id, setScholarData, fullName) {
   return { scholar_id, setScholarData, fullName };
@@ -35,7 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-async function setSupervisor(scholar_id, setScholarData, fullName, setIsSupervisor) {
+async function setSupervisor(scholar_id, setScholarData, fullName, setIsSupervisor,setOpen) {
   const res = await axios.put(
     `${BASE_URL}/update-supervisor/${scholar_id}/${fullName}`,
     { scholar_id, fullName },
@@ -53,13 +54,15 @@ async function setSupervisor(scholar_id, setScholarData, fullName, setIsSupervis
   });
   setScholarData(newData.data);
   setIsSupervisor(true);
+  setOpen(false);
 }
 
 function SecondData(props) {
-  const { flt_nin, setScholarData, scholar_id ,setIsSupervisor } = props;
+  const { flt_nin, setScholarData, scholar_id ,setIsSupervisor , setOpen} = props;
   const [rows, setRows] = useState([]);
-  const [isShow, setIsShow] = useState(false);
-  console.log(flt_nin);
+  const intialize = (flt_nin.length > 0);
+  const [isShow, setIsShow] = useState(intialize);
+  // console.log(flt_nin);
 
   useEffect(() => {
     const newRows = [];
@@ -71,30 +74,32 @@ function SecondData(props) {
     if (newRows.length !== 0) setIsShow(true);
     else setIsShow(false);
     setRows(newRows);
-  });
+  },[isShow]);
 
   // yahan bhi check karna hain wether it's showing data properly : )
   return (
+    <>{intialize ? 
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell align="left">Faculty Name</StyledTableCell>
-            <StyledTableCell align="right"> Actions </StyledTableCell>
+            <StyledTableCell align="center">Faculty Name</StyledTableCell>
+            <StyledTableCell align="center"> Actions </StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
             <StyledTableRow key={index}>
-              <StyledTableCell align="left">{row.fullName}</StyledTableCell>
-              <StyledTableCell align="right">
+              <StyledTableCell align="center">{row.fullName}</StyledTableCell>
+              <StyledTableCell align="center">
                 <button
                   onClick={() =>
                     setSupervisor(
                       row.scholar_id,
                       row.setScholarData,
                       row.fullName,
-                      setIsSupervisor
+                      setIsSupervisor,
+                      setOpen
                     )
                   }
                 >
@@ -107,6 +112,10 @@ function SecondData(props) {
         </TableBody>
       </Table>
     </TableContainer>
+    :
+    <Typography>No more No request send Faculties</Typography>
+}
+    </>
   );
 }
 

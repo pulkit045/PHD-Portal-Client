@@ -51,9 +51,11 @@ function createData(firstName, enrollmentNumber , supervisor, _id, requests , fl
 
 function Row(props) {
 	const { row } = props;
-	console.log(row);
 	const [open, setOpen] = useState(false);
-	const [isSupervisor , setIsSupervisor] = useState(false);
+
+	const intialize = (row.supervisor.length > 0)
+
+	const [isSupervisor , setIsSupervisor] = useState(intialize);
   
 	return (
 	  <React.Fragment>
@@ -64,21 +66,21 @@ function Row(props) {
 			  size="small"
 			  onClick={() => setOpen(!open)}
 			>
-			  {!isSupervisor ? null :  open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+			  {isSupervisor ? null :  open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 			</IconButton>
 		  </StyledTableCell>
-		  <StyledTableCell component="th" scope="row">
+		  <StyledTableCell align="left">
 			{row.firstName}
 		  </StyledTableCell>
-		  <StyledTableCell align="right">{row.enrollmentNumber}</StyledTableCell>
-		  <StyledTableCell align="right">{row.supervisor}</StyledTableCell>
+		  <StyledTableCell align="center">{row.enrollmentNumber}</StyledTableCell>
+		  <StyledTableCell align="center">{row.supervisor}</StyledTableCell>
 		</StyledTableRow>
 		<StyledTableRow>
 		  <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
 			<Collapse in={open} timeout="auto" unmountOnExit>
 			  <Box sx={{ margin: 1 }}>
-				<Data requests={row.requests} setScholarData={row.setScholarData} setIsSupervisor={setIsSupervisor}/>
-				<SecondData flt_nin={row.flt_nin} scholar_id={row._id} setScholarData={row.setScholarData} setIsSupervisor={setIsSupervisor}/>
+				<Data requests={row.requests} setScholarData={row.setScholarData} setIsSupervisor={setIsSupervisor} setOpen={setOpen}/>
+				<SecondData flt_nin={row.flt_nin} scholar_id={row._id} setScholarData={row.setScholarData} setIsSupervisor={setIsSupervisor} setOpen={setOpen}/>
 			  </Box>
 			</Collapse>
 		  </StyledTableCell>
@@ -135,10 +137,10 @@ function Fic() {
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <StyledTableCell />
-            <StyledTableCell align="right">Scholar Name</StyledTableCell>
-            <StyledTableCell align="right">Enrollment Number</StyledTableCell>
-            <StyledTableCell align="right">Supervisor</StyledTableCell>
+            <StyledTableCell/>
+            <StyledTableCell align="cneter">Scholar Name</StyledTableCell>
+            <StyledTableCell align="center">Enrollment Number</StyledTableCell>
+            <StyledTableCell align="center">Supervisor</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -155,5 +157,3 @@ function Fic() {
 export default Fic;
 
 
-// some bugs in it api is being it like endlessly i dont know why 
-// second working fine ig it's just that i might have to surround it with a container because it's looking too big kind of : )
