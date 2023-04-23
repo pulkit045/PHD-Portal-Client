@@ -76,6 +76,7 @@ function Director(){
                     const dt = createDataNotAssigned(scholar.fullName , scholar.enrollmentNumber);
                     newrowsnotassigned.push(dt);
                 });
+                console.log(newrowsnotassigned);
                 if(newrowsnotassigned.length > 0)
                     setLengthNotAssigned(true);
                 else
@@ -88,7 +89,7 @@ function Director(){
                     const dt = createDataAssigned(scholar.fullName , scholar.enrollmentNumber ,scholar.supervisor);
                     newrowsassigned.push(dt);
                 });
-
+                console.log(newrowsassigned);
                 if(newrowsassigned.length > 0)
                     setLengthAssigned(true);
                 else
