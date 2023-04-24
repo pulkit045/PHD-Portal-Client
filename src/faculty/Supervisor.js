@@ -45,15 +45,12 @@ function createDataOther(fullName, supervisor_status) {
   return { fullName, supervisor_status };
 }
 
-
-
 function Supervisor() {
   const faculty = useFaculty();
   const [rowsPending, setRowsPending] = useState([]);
   const [rowsDone, setRowsDone] = useState([]);
 
   useEffect(() => {
-
     if (typeof faculty !== "undefined" && faculty) {
       if (typeof faculty.requests !== "undefined" && faculty.requests) {
         const newRowPending = [];
@@ -80,19 +77,15 @@ function Supervisor() {
           }
         });
 
-        
-
         // const prevRowsDone = rowsDone;
         // const prevRowsPending = rowsPending;
 
         setRowsDone(newRowDone);
         setRowsPending(newRowPending);
-
-        
       }
     }
-    if(localStorage.getItem("shouldLoad")===null){
-      localStorage.setItem("shouldLoad",true);
+    if (localStorage.getItem("shouldLoad") === null) {
+      localStorage.setItem("shouldLoad", true);
       window.location.reload(true);
     }
   }, [faculty]);
@@ -101,6 +94,7 @@ function Supervisor() {
     <>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <caption sx={{ minWidth: 700 }}>Request Left to decide</caption>
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">Scholar Name</StyledTableCell>
@@ -131,10 +125,15 @@ function Supervisor() {
       </TableContainer>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <caption sx={{ minWidth: 700 }}>
+            Request you have already responded to
+          </caption>
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">Scholar Name</StyledTableCell>
-              <StyledTableCell align="center">Supervisor Status</StyledTableCell>
+              <StyledTableCell align="center">
+                Supervisor Status
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

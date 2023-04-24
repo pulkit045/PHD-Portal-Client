@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-//now it's working Fine 
+//now it's working Fine
 
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -59,6 +59,9 @@ function InnerData(props) {
       {length ? (
         <TableContainer component={Paper}>
           <Table aria-label="collapsible table">
+            <caption style={{ width: "inherit" }}>
+              List of Students enrolled for ypur Course
+            </caption>
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Scholar Name</StyledTableCell>

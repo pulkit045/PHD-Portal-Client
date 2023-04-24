@@ -173,6 +173,9 @@ function RequestSupervisor(props) {
           </Box>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <caption style={{ width: "inherit" }}>
+                Supervisor you have send request to and it's current status
+              </caption>
               <TableHead>
                 <TableRow>
                   <StyledTableCell align="center">

@@ -36,7 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-async function setSupervisor(_id, setScholarData, setIsSupervisor,setOpen) {
+async function setSupervisor(_id, setScholarData, setIsSupervisor, setOpen) {
   const res = await axios.put(`${BASE_URL}/update-supervisor/${_id}/`, _id, {
     headers: {
       Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
@@ -57,7 +57,7 @@ function Data(props) {
   const { setIsSupervisor } = props;
   const { setScholarData } = props;
   const { requests } = props;
-  const {setOpen} = props;
+  const { setOpen } = props;
   const [rows, setRows] = useState([]);
   const intialize = requests.length > 0;
   const [isShow, setIsShow] = useState(intialize);
@@ -86,6 +86,9 @@ function Data(props) {
       {isShow ? (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <caption style={{ width: "inherit" }}>
+              List of Supervisor to whom request has been sent
+            </caption>
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Faculty Name</StyledTableCell>

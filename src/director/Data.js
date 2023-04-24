@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../CONSTANTS";
 
 import { styled } from "@mui/material/styles";
@@ -12,8 +12,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 
-function createData(scholar_id, setScholarData, fullName) {
-  return { scholar_id, setScholarData, fullName };
+function createData(supervisor, supervisor_status, _id, setScholarData) {
+  return { supervisor, supervisor_status, _id, setScholarData };
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -36,65 +36,69 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-async function setSupervisor(
-  scholar_id,
-  setScholarData,
-  fullName,
-  setIsSupervisor,
-  setOpen
-) {
-  const res = await axios.put(
-    `${BASE_URL}/update-supervisor/${scholar_id}/${fullName}`,
-    { scholar_id, fullName },
+async function setSupervisor(_id, setScholarData, setIsDirector, setOpen) {
+  const res = await axios.patch(
+    `${BASE_URL}/director/finalize-supervisor-request/${_id}/`,
+    _id,
     {
       headers: {
         Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
       },
     }
   );
+
   console.log(res);
   const newData = await axios.get(`${BASE_URL}/scholar-data`, {
     headers: {
       Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
     },
   });
+
   setScholarData(newData.data);
-  setIsSupervisor(true);
+  setIsDirector(true);
   setOpen(false);
 }
 
-function SecondData(props) {
-  const { flt_nin, setScholarData, scholar_id, setIsSupervisor, setOpen } =
-    props;
+function Data(props) {
+  const { setIsDirector } = props;
+  const { setScholarData } = props;
+  const { requests } = props;
+  const { setOpen } = props;
   const [rows, setRows] = useState([]);
-  const intialize = flt_nin.length > 0;
+  const intialize = requests.length > 0;
   const [isShow, setIsShow] = useState(intialize);
-  // console.log(flt_nin);
 
   useEffect(() => {
     const newRows = [];
-    flt_nin.forEach((flt) => {
-      const dt = createData(scholar_id, setScholarData, flt.fullName);
+    requests.forEach((request) => {
+      const dt = createData(
+        request.supervisor,
+        request.supervisor_status,
+        request._id,
+        setScholarData
+      );
+      console.log(dt);
       newRows.push(dt);
     });
-
     if (newRows.length !== 0) setIsShow(true);
     else setIsShow(false);
     setRows(newRows);
   }, [isShow]);
 
-  // yahan bhi check karna hain wether it's showing data properly : )
+  // yahan check lagana hain that ki whether show karna hain yaa nhi :)
+
   return (
     <>
-      {intialize ? (
+      {isShow ? (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <caption style={{ width: "inherit" }}>
-              Faculties to whom request is not sent
+              List of Supervisor to whom request has been sent
             </caption>
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Faculty Name</StyledTableCell>
+                <StyledTableCell align="center">Faculty Status</StyledTableCell>
                 <StyledTableCell align="center"> Actions </StyledTableCell>
               </TableRow>
             </TableHead>
@@ -102,22 +106,24 @@ function SecondData(props) {
               {rows.map((row, index) => (
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center">
-                    {row.fullName}
+                    {row.supervisor}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.supervisor_status}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     <button
                       onClick={() =>
                         setSupervisor(
-                          row.scholar_id,
+                          row._id,
                           row.setScholarData,
-                          row.fullName,
-                          setIsSupervisor,
+                          setIsDirector,
                           setOpen
                         )
                       }
                     >
                       {" "}
-                      Add As Supervisor{" "}
+                      Finalize Supervisor{" "}
                     </button>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -126,10 +132,10 @@ function SecondData(props) {
           </Table>
         </TableContainer>
       ) : (
-        <Typography>No more No request send Faculties</Typography>
+        <Typography>No requests has been send by him</Typography>
       )}
     </>
   );
 }
 
-export default SecondData;
+export default Data;

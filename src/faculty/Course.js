@@ -15,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-import InnerData from './InnerData';
+import InnerData from "./InnerData";
 // import { useScrollTrigger } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -42,8 +42,6 @@ function createDataUpper(course_name, course_credits, scholars_enrolled) {
   return { course_name, course_credits, scholars_enrolled };
 }
 
-
-
 function Row(props) {
   const { row } = props;
   // console.log(row);
@@ -54,17 +52,13 @@ function Row(props) {
   return (
     <React.Fragment>
       <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-      <StyledTableCell>
+        <StyledTableCell>
           <IconButton
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
           >
-            {open ? (
-              <KeyboardArrowUpIcon />
-            ) : (
-              <KeyboardArrowDownIcon />
-            )}
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </StyledTableCell>
         <StyledTableCell align="center">{row.course_name}</StyledTableCell>
@@ -129,6 +123,9 @@ function Course() {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
+        <caption style={{ width: "inherit" }}>
+          Courses you will be teaching
+        </caption>
         <TableHead>
           <TableRow>
             <StyledTableCell />
@@ -148,4 +145,4 @@ function Course() {
 
 export default Course;
 
-// some errors in data fetching and in the component building as well 
+// some errors in data fetching and in the component building as well

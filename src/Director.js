@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {BASE_URL} from './CONSTANTS';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BASE_URL } from "./CONSTANTS";
 
+// import ScholarData from "./fic/ScholarData";
+
+// import PropTypes from 'prop-types';
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,7 +13,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+
+import Data from "./director/Data";
+import SecondData from "./director/SecondData";
+// removing the need for the scholar data wala part :
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,133 +43,182 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-
-function createDataNotAssigned(fullName , enrollmentNumber){
-    return {fullName , enrollmentNumber};
+function createData(
+  firstName,
+  enrollmentNumber,
+  supervisor,
+  _id,
+  requests,
+  flt_nin,
+  setScholarData,
+  isDirector
+) {
+  return {
+    firstName,
+    enrollmentNumber,
+    supervisor,
+    _id,
+    requests,
+    flt_nin,
+    setScholarData,
+    isDirector,
+  };
 }
 
-function createDataAssigned(fullName , enrollmentNumber , supervisor){
-    return {fullName , enrollmentNumber , supervisor};
+function finalizeSupervisor(_id, setIsDirector, setIsSupervisor) {
+  async function finalizeSupervisor() {
+    await axios.patch(`${BASE_URL}/director/finalize-supervisor/${_id}`, _id, {
+      headers: {
+        Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
+      },
+    });
+  }
+
+  finalizeSupervisor();
+  setIsDirector(true);
+  setIsSupervisor(true);
 }
 
-function Director(){
-    const [data , setData] = useState([]);
-    const [rowsassigned , setRowsAssigned] = useState([]);
-    const [rowsnotassigned , setRowsNotAssigned] = useState([]);
-    const [lengthassigned , setLengthAssigned] = useState(true);
-    const [lengthnotassigned , setLengthNotAssigned] = useState(true);
-    const [fetchdata , setFetchData] = useState(true);
+function Row(props) {
+  const { row } = props;
+  console.log(row);
+  const [open, setOpen] = useState(false);
 
-    useEffect(()=>{
+  const [isDirector, setIsDirector] = useState(row.isDirector);
+  const intialize = row.supervisor.length > 0;
+  const [isSupervisor, setIsSupervisor] = useState(intialize);
 
-        async function getAllSupervisor() {
-            await axios
-              .get(`${BASE_URL}/get-all-supervisor`, {
-                headers: {
-                  Authorization:
-                    "Bearer " + JSON.parse(localStorage.getItem("token")),
-                },
-              })
-              .then((res) => {
-                setData(res.data);
-              });
-          }
-          
-          if(fetchdata){
-            getAllSupervisor();
-            setFetchData(false);
-          }
+  return (
+    <React.Fragment>
+      <StyledTableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+        <StyledTableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {isDirector ? null : open ? (
+              <KeyboardArrowUpIcon />
+            ) : (
+              <KeyboardArrowDownIcon />
+            )}
+          </IconButton>
+        </StyledTableCell>
+        <StyledTableCell align="left">{row.firstName}</StyledTableCell>
+        <StyledTableCell align="center">{row.enrollmentNumber}</StyledTableCell>
+        <StyledTableCell align="center">{row.supervisor}</StyledTableCell>
+        {isDirector ? (
+          <StyledTableCell align="center">Finalized</StyledTableCell>
+        ) : !isSupervisor ? (
+          <StyledTableCell></StyledTableCell>
+        ) : (
+          <StyledTableCell align="center">
+            <button
+              onClick={() =>
+                finalizeSupervisor(row._id, setIsDirector, setIsSupervisor)
+              }
+            >
+              {" "}
+              Finalize it !!{" "}
+            </button>
+          </StyledTableCell>
+        )}
+      </StyledTableRow>
+      <StyledTableRow>
+        <StyledTableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={6}
+        >
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Data
+                requests={row.requests}
+                setScholarData={row.setScholarData}
+                setIsDirector={setIsDirector}
+                setOpen={setOpen}
+              />
+              <SecondData
+                flt_nin={row.flt_nin}
+                scholar_id={row._id}
+                setScholarData={row.setScholarData}
+                setIsDirector={setIsDirector}
+                setOpen={setOpen}
+              />
+            </Box>
+          </Collapse>
+        </StyledTableCell>
+      </StyledTableRow>
+    </React.Fragment>
+  );
+}
 
-          if(data !== 'undefined' && data){
-            if(data.supervisor_notassigned !== 'undefined' && data.supervisor_notassigned){
-                const newrowsnotassigned = [];
-                data.supervisor_notassigned.forEach(scholar => {
-                    const dt = createDataNotAssigned(scholar.fullName , scholar.enrollmentNumber);
-                    newrowsnotassigned.push(dt);
-                });
-                console.log(newrowsnotassigned);
-                if(newrowsnotassigned.length > 0)
-                    setLengthNotAssigned(true);
-                else
-                    setLengthNotAssigned(false);
-                setRowsNotAssigned(newrowsnotassigned);
-            }
-            if(data.supervisor_assigned !== 'undefined' && data.supervisor_assigned){
-                const newrowsassigned = [];
-                data.supervisor_assigned.forEach(scholar => {
-                    const dt = createDataAssigned(scholar.fullName , scholar.enrollmentNumber ,scholar.supervisor);
-                    newrowsassigned.push(dt);
-                });
-                console.log(newrowsassigned);
-                if(newrowsassigned.length > 0)
-                    setLengthAssigned(true);
-                else
-                    setLengthAssigned(false);
+function Director() {
+  const [scholar_data, setScholarData] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [fetchData, setFetchData] = useState(true);
 
-                setRowsAssigned(newrowsassigned);
-            }
+  useEffect(() => {
+    async function cc() {
+      await axios
+        .get(`${BASE_URL}/scholar-data`, {
+          headers: {
+            Authorization:
+              "Bearer " + JSON.parse(localStorage.getItem("token")),
+          },
+        })
+        .then((res) => {
+          setScholarData(res.data);
+        });
+    }
+    if (fetchData) {
+      cc();
+      setFetchData(false);
+    }
+  }, [fetchData]);
 
+  useEffect(() => {
+    if (scholar_data !== "undefined" && scholar_data) {
+      const newRows = [];
+      scholar_data.forEach((data) => {
+        const dd = createData(
+          data.dt.firstName,
+          data.dt.enrollmentNumber,
+          data.dt.supervisor,
+          data.dt._id,
+          data.dt.requests,
+          data.flt_nin,
+          setScholarData,
+          data.dt.isDirector
+        );
+        newRows.push(dd);
+      });
+      setRows(newRows);
+    }
+  }, [scholar_data]);
 
-          }
-
-
-    },[]);
-
-    return (
-
-        <>
-        {lengthassigned ? <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Scholar Name</StyledTableCell>
-                <StyledTableCell align="center">EnrollMent Number</StyledTableCell>
-                <StyledTableCell align="center">Supervisor Name</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rowsassigned.map((row, index) => (
-                <StyledTableRow key={index}>
-                  <StyledTableCell align="center">
-                    {row.fullName}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.enrollmentNumber}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.supervisor}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer> : <Typography></Typography>}
-
-        {lengthnotassigned ? <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Scholar Name</StyledTableCell>
-                <StyledTableCell align="center">EnrollMent Number</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rowsnotassigned.map((row, index) => (
-                <StyledTableRow key={index}>
-                  <StyledTableCell align="center">
-                    {row.fullName}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.enrollmentNumber}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer> : <Typography>All Scholars have been assigned a Supervisor</Typography>}
-
-        </>
-    );
+  return (
+    <TableContainer component={Paper} sx={{ minWidth: 700 }}>
+      <Table aria-label="collapsible table">
+        <caption style={{ width: "inherit" }}>List of All Scholars</caption>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell />
+            <StyledTableCell align="cneter">Scholar Name</StyledTableCell>
+            <StyledTableCell align="center">Enrollment Number</StyledTableCell>
+            <StyledTableCell align="center">
+              Assigned by the Faculty Incharge
+            </StyledTableCell>
+            <StyledTableCell align="center">Actions</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, index) => (
+            <Row key={index} row={row} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 }
 
 export default Director;

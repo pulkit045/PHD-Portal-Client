@@ -12,8 +12,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 
-function createData(scholar_id, setScholarData, fullName) {
-  return { scholar_id, setScholarData, fullName };
+function createData(scholar_id, setScholarData, fullName, supervisor_id) {
+  return { scholar_id, setScholarData, fullName, supervisor_id };
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -40,12 +40,13 @@ async function setSupervisor(
   scholar_id,
   setScholarData,
   fullName,
-  setIsSupervisor,
-  setOpen
+  setIsDirector,
+  setOpen,
+  supervisor_id
 ) {
-  const res = await axios.put(
-    `${BASE_URL}/update-supervisor/${scholar_id}/${fullName}`,
-    { scholar_id, fullName },
+  const res = await axios.patch(
+    `${BASE_URL}/director/finalize-supervisor-request/${scholar_id}/${supervisor_id}/${fullName}`,
+    { scholar_id, supervisor_id, fullName },
     {
       headers: {
         Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
@@ -59,13 +60,12 @@ async function setSupervisor(
     },
   });
   setScholarData(newData.data);
-  setIsSupervisor(true);
+  setIsDirector(true);
   setOpen(false);
 }
 
 function SecondData(props) {
-  const { flt_nin, setScholarData, scholar_id, setIsSupervisor, setOpen } =
-    props;
+  const { flt_nin, setScholarData, scholar_id, setIsDirector, setOpen } = props;
   const [rows, setRows] = useState([]);
   const intialize = flt_nin.length > 0;
   const [isShow, setIsShow] = useState(intialize);
@@ -74,7 +74,12 @@ function SecondData(props) {
   useEffect(() => {
     const newRows = [];
     flt_nin.forEach((flt) => {
-      const dt = createData(scholar_id, setScholarData, flt.fullName);
+      const dt = createData(
+        scholar_id,
+        setScholarData,
+        flt.fullName,
+        flt.supervisor_id
+      );
       newRows.push(dt);
     });
 
@@ -111,13 +116,14 @@ function SecondData(props) {
                           row.scholar_id,
                           row.setScholarData,
                           row.fullName,
-                          setIsSupervisor,
-                          setOpen
+                          setIsDirector,
+                          setOpen,
+                          row.supervisor_id
                         )
                       }
                     >
                       {" "}
-                      Add As Supervisor{" "}
+                      Finalize Supervisor{" "}
                     </button>
                   </StyledTableCell>
                 </StyledTableRow>

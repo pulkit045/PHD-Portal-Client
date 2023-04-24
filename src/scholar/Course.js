@@ -32,7 +32,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-// for sending course from active list to completed list 
+// for sending course from active list to completed list
 async function removeFromActive(_id, setData) {
   // console.log(_id);
   let config = {
@@ -83,7 +83,7 @@ async function addToActive(_id, setCourses, setData) {
       setCourses(res.data);
     });
 
-    await axios
+  await axios
     .get(`${BASE_URL}/courses/scholar/get-all-courses`, {
       headers: {
         Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
@@ -102,13 +102,12 @@ function createDataActive(_id, course_name, course_credits, fullName) {
   return { _id, course_name, course_credits, fullName };
 }
 
-//creating data for completed list 
+//creating data for completed list
 function createDataCompleted(course_name, course_credits, fullName) {
   return { course_name, course_credits, fullName };
 }
 
 function Course() {
-
   const [data, setData] = useState({});
   const [rowscourses, setRowsCourses] = useState([]);
   const [rowsactive, setRowsActive] = useState([]);
@@ -116,7 +115,7 @@ function Course() {
   const [rowscompleted, setRowsCompleted] = useState([]);
   const [activelength, setActiveLength] = useState(false);
   const [completedlength, setCompletedLength] = useState(false);
-  const [courselength , setCourseLength] = useState(false);
+  const [courselength, setCourseLength] = useState(false);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -198,51 +197,62 @@ function Course() {
         );
         newCourses.push(dt);
       });
-      if(newCourses.length > 0)
-        setCourseLength(true);
-      else
-        setCourseLength(false);
+      if (newCourses.length > 0) setCourseLength(true);
+      else setCourseLength(false);
       setRowsCourses(newCourses);
     }
   }, [fetchData, data, courses]);
 
   return (
-    <>{courselength ? 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell align="center">Course Name</StyledTableCell>
-              <StyledTableCell align="center">Faculty Name</StyledTableCell>
-              <StyledTableCell align="center">Course Credits</StyledTableCell>
-              <StyledTableCell align="center">Actions</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rowscourses.map((row, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell align="center">
-                  {row.course_name}
-                </StyledTableCell>
-                <StyledTableCell align="center">{row.fullName}</StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.course_credits}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <button onClick={() => addToActive(row._id, setCourses, setData)}>
-                    {" "}
-                    Add this course{" "}
-                  </button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      : <Typography>No More Courses Available for this Semester</Typography>}
+    <>
+      {courselength ? (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <caption style={{ width: "inherit" }}>
+              Remaining Courses Available
+            </caption>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center">Course Name</StyledTableCell>
+                <StyledTableCell align="center">Faculty Name</StyledTableCell>
+                <StyledTableCell align="center">Course Credits</StyledTableCell>
+                <StyledTableCell align="center">Actions</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rowscourses.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell align="center">
+                    {row.course_name}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.fullName}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.course_credits}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <button
+                      onClick={() => addToActive(row._id, setCourses, setData)}
+                    >
+                      {" "}
+                      Add this course{" "}
+                    </button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography>No More Courses Available for this Semester</Typography>
+      )}
       {activelength ? (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <caption style={{ width: "inherit" }}>
+              Courses currently active{" "}
+            </caption>
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Course Name</StyledTableCell>
@@ -280,6 +290,9 @@ function Course() {
       {completedlength ? (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <caption style={{ width: "inherit" }}>
+              Courses you have completed till now
+            </caption>
             <TableHead>
               <TableRow>
                 <StyledTableCell align="center">Course Name</StyledTableCell>
