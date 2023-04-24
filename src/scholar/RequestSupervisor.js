@@ -6,6 +6,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -66,6 +67,8 @@ function RequestSupervisor(props) {
   const [nameValue, setNameValue] = useState("");
   const func = useUpdateScholar();
   const scholar = useScholar();
+  const intialize = scholar.supervisor.length > 0;
+  const [toshow, setToShow] = useState(intialize);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -78,10 +81,8 @@ function RequestSupervisor(props) {
         });
         // const prevRows = rows;
         setRows(newRows);
-        
       }
     }
-    
   }, [scholar]);
 
   // const [isReq,setIsReq] = useState(false);
@@ -118,70 +119,89 @@ function RequestSupervisor(props) {
     }
     getAllFaculties();
   }, [rows]);
-  
+
   return (
     <>
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="supervisorLabel">Faculties</InputLabel>
-              <Select
-                labelId="supervisorLabel"
-                id="supervisor"
-                label="Supervisor"
-                name="supervisor"
-                value={nameValue}
-                onChange={(e) => setNameValue(e.target.value)}
-              >
-                {faculties.map((faculty, index) => {
-                  return (
-                    <MenuItem
-                      key={index}
-                      value={JSON.stringify({
-                        id: faculty._id,
-                        fullName: faculty.fullName,
-                      })}
-                    >
-                      {faculty.fullName}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
-            >
-              Request Supervisor
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell align="left">Supervisor Name</StyledTableCell>
-              <StyledTableCell align="right">Supervisor Status</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell align="left">{row.supervisor}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.supervisor_status}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {toshow ? (
+        <>
+          <Typography>
+            U have been assigned a Supervisor no more request you can send
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="supervisorLabel">Faculties</InputLabel>
+                  <Select
+                    labelId="supervisorLabel"
+                    id="supervisor"
+                    label="Supervisor"
+                    name="supervisor"
+                    value={nameValue}
+                    onChange={(e) => setNameValue(e.target.value)}
+                  >
+                    {faculties.map((faculty, index) => {
+                      return (
+                        <MenuItem
+                          key={index}
+                          value={JSON.stringify({
+                            id: faculty._id,
+                            fullName: faculty.fullName,
+                          })}
+                        >
+                          {faculty.fullName}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 2, mb: 2 }}
+                >
+                  Request Supervisor
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <caption style={{ width: "inherit" }}>
+                Supervisor you have send request to and it's current status
+              </caption>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center">
+                    Supervisor Name
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    Supervisor Status
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell align="center">
+                      {row.supervisor}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.supervisor_status}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      )}
     </>
   );
 }
