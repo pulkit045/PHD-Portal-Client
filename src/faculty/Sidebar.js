@@ -10,7 +10,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
  
-
+import MyScholars from './MyScholars';
 import Course from './Course';
 import Supervisor from './Supervisor';
 
@@ -63,7 +63,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function Sidebar() {
-  const sideBarOptions = ['Supervisor','Course'];
+  const sideBarOptions = ['Supervisor','Course','My Scholars'];
   const theme = useTheme();
   const open = true;
   const [menudata , setMenuData] = useState("Supervisor");
@@ -99,6 +99,7 @@ function Sidebar() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {menudata === "Supervisor" && <Supervisor/>}
         {menudata === "Course" && <Course/>}
+        {menudata === "My Scholars" && <MyScholars />}
         <DrawerHeader />
       </Box>
     </Box>

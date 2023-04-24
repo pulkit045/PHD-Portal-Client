@@ -66,6 +66,7 @@ async function setSupervisor(
 
 function SecondData(props) {
   const { flt_nin, setScholarData, scholar_id, setIsDirector, setOpen } = props;
+  console.log(flt_nin);
   const [rows, setRows] = useState([]);
   const intialize = flt_nin.length > 0;
   const [isShow, setIsShow] = useState(intialize);
@@ -78,7 +79,7 @@ function SecondData(props) {
         scholar_id,
         setScholarData,
         flt.fullName,
-        flt.supervisor_id
+        flt._id
       );
       newRows.push(dt);
     });

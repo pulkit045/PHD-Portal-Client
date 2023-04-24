@@ -12,8 +12,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 
-function createData(scholar_id, setScholarData, fullName) {
-  return { scholar_id, setScholarData, fullName };
+function createData(scholar_id, setScholarData, fullName, supervisor_id) {
+  return { scholar_id, setScholarData, fullName , supervisor_id};
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -41,11 +41,12 @@ async function setSupervisor(
   setScholarData,
   fullName,
   setIsSupervisor,
-  setOpen
+  setOpen,
+  supervisor_id
 ) {
   const res = await axios.put(
-    `${BASE_URL}/update-supervisor/${scholar_id}/${fullName}`,
-    { scholar_id, fullName },
+    `${BASE_URL}/update-supervisor/${scholar_id}/${fullName}/${supervisor_id}`,
+    { scholar_id, fullName, supervisor_id},
     {
       headers: {
         Authorization: "Bearer " + JSON.parse(localStorage.getItem("token")),
@@ -64,7 +65,7 @@ async function setSupervisor(
 }
 
 function SecondData(props) {
-  const { flt_nin, setScholarData, scholar_id, setIsSupervisor, setOpen } =
+  const { flt_nin, setScholarData, scholar_id, setIsSupervisor, setOpen} =
     props;
   const [rows, setRows] = useState([]);
   const intialize = flt_nin.length > 0;
@@ -74,7 +75,7 @@ function SecondData(props) {
   useEffect(() => {
     const newRows = [];
     flt_nin.forEach((flt) => {
-      const dt = createData(scholar_id, setScholarData, flt.fullName);
+      const dt = createData(scholar_id, setScholarData, flt.fullName, flt._id);
       newRows.push(dt);
     });
 
@@ -112,7 +113,8 @@ function SecondData(props) {
                           row.setScholarData,
                           row.fullName,
                           setIsSupervisor,
-                          setOpen
+                          setOpen,
+                          row.supervisor_id
                         )
                       }
                     >
