@@ -10,7 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
+// import {XLSX} from 'xlsx';
 function createData(fullName, enrollmentNumber, supervisor) {
   return { fullName, enrollmentNumber, supervisor };
 }
@@ -35,9 +35,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const styles = {
+  dis : {
+    margin : "0 auto",
+    marginTop : "50px",
+    disabled : "true"
+  },
+  nondis : {
+    
+    margin : "0 auto",
+    marginTop : "50px",
+
+  }
+}
+
 function ScholarSupervisor() {
   const [data, setData] = useState([]);
   const [rows, setRows] = useState([]);
+  const [isDownloadable , setIsDownloadable] = useState(false);
   const [fetchdata, setFetchData] = useState(true);
 
   useEffect(() => {
@@ -51,7 +66,8 @@ function ScholarSupervisor() {
         })
         .then((res) => {
           console.log(res.data);
-          setData(res.data);
+          setData(res.data.data);
+          setIsDownloadable(res.data.isDownloadable);
         });
     }
     if (fetchdata) {
@@ -73,7 +89,21 @@ function ScholarSupervisor() {
     }
   }, [data, fetchdata]);
 
+  // function downloadExcel(){
+  //   const workSheet = XLSX.utils.json_to_sheet(rows);
+  //   const workBook = XLSX.utils.book_new();
+  
+  //   XLSX.utils.book_append_sheet(workBook,workSheet,'Scholar - Supervisor Data');
+  //   //Buffer
+  //   let buf=XLSX.write(workBook,{bookType:"xlsx",type:"buffer"});
+  //   //Binary String
+  //   XLSX.write(workBook,{bookType:"xlsx",type:"binary"});
+  //   //Download
+  //   XLSX.writeFile(workBook,"ScholarSupervisorData.xlsx")
+  // }
+
   return (
+    <>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <caption style={{ width: "inherit" }}>
@@ -101,6 +131,9 @@ function ScholarSupervisor() {
         </TableBody>
       </Table>
     </TableContainer>
+
+    {isDownloadable ? <button style={styles.nondis}> Download the File </button> : <button style={styles.dis}>Download the File</button>}
+    </>
   );
 }
 
