@@ -14,6 +14,7 @@ import Scholar from './Scholar';
 import Faculty from './Faculty';
 import Fic from './Fic';
 import Director from './Director';
+import Examcell from './Examcell';
 import { useEffect, useState } from 'react';
 
 
@@ -59,6 +60,7 @@ function App() {
   if (decodedToken && decodedToken.role === "faculty") return <FacultyProvider><Faculty /></FacultyProvider>
   if (decodedToken && decodedToken.role === "fic") return <Fic />
   if (decodedToken && decodedToken.role === "director") return <Director />
+  if (decodedToken && decodedToken.role === "ecell") return <Examcell />
   return <Page404 />
 }
 
